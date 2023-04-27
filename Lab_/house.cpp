@@ -16,6 +16,8 @@ void processInput(GLFWwindow *window);
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
+//----------------------SHADER TRIANGULOS----------------------------------------
+
 const char *vertexShaderSource = "#version 330 core\n"
     "layout (location = 0) in vec3 aPos;\n"
     "void main()\n"
@@ -28,6 +30,40 @@ const char *fragmentShaderSource = "#version 330 core\n"
     "{\n"
     "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
     "}\n\0";
+
+
+//----------------------SHADER LINEAS----------------------------------------
+
+const char *vertexShaderSourceLine = "#version 330 core\n"
+    "layout (location = 0) in vec3 aPos;\n"
+    "void main()\n"
+    "{\n"
+    "   gl_Position = vec4(aPos, 1.0);\n"
+    "}\0";
+const char *fragmentShaderSourceLine = "#version 330 core\n"
+    "out vec4 FragColor;\n"
+	"in vec4 vertexColor;\n"
+    "void main()\n"
+    "{\n"
+    "   FragColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);\n"
+    "}\n\0";
+
+
+//----------------------SHADER PUNTOS----------------------------------------
+    
+const char *vertexShaderSourcePoint = "#version 330 core\n"
+    "layout (location = 0) in vec3 aPos;\n"
+    "void main()\n"
+    "{\n"
+    "   gl_Position = vec4(aPos, 1.0);\n"
+    "}\0";
+const char *fragmentShaderSourcePoint = "#version 330 core\n"
+    "out vec4 FragColor;\n"
+	"in vec4 vertexColor;\n"
+    "void main()\n"
+    "{\n"
+    "   FragColor = vec4(0.5, 0.0, 0.0, 1.0);\n"
+    "}\n\0";    
 
 int main()
 {
@@ -59,8 +95,12 @@ int main()
     gladLoadGL(glfwGetProcAddress);
 
 
-    // build and compile our shader program
-    // ------------------------------------
+
+
+    //----------------------SHADER TRIANGULOS----------------------------------------
+
+
+
     // vertex shader
     unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
@@ -99,8 +139,93 @@ int main()
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
 
-    // set up vertex data (and buffer(s)) and configure vertex attributes
-    // ------------------------------------------------------------------
+
+
+    //----------------------SHADER LINEAS----------------------------------------
+
+
+
+	// vertex shader
+    unsigned int vertexShaderLine = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertexShaderLine, 1, &vertexShaderSourceLine, NULL);
+    glCompileShader(vertexShaderLine);
+    // check for shader compile errors
+    glGetShaderiv(vertexShaderLine, GL_COMPILE_STATUS, &success);
+    if (!success)
+    {
+        glGetShaderInfoLog(vertexShaderLine, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+    }
+    // fragment shader
+    unsigned int fragmentShaderLine = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragmentShaderLine, 1, &fragmentShaderSourceLine, NULL);
+    glCompileShader(fragmentShaderLine);
+    // check for shader compile errors
+    glGetShaderiv(fragmentShaderLine, GL_COMPILE_STATUS, &success);
+    if (!success)
+    {
+        glGetShaderInfoLog(fragmentShaderLine, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
+    }
+    // link shaders
+    unsigned int shaderProgramLine = glCreateProgram();
+    glAttachShader(shaderProgramLine, vertexShaderLine);
+    glAttachShader(shaderProgramLine, fragmentShaderLine);
+    glLinkProgram(shaderProgramLine);
+    // check for linking errors
+    glGetProgramiv(shaderProgramLine, GL_LINK_STATUS, &success);
+    if (!success) {
+        glGetProgramInfoLog(shaderProgramLine, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
+    }
+    glDeleteShader(vertexShaderLine);
+	glDeleteShader(fragmentShaderLine);
+
+
+
+	
+	//----------------------SHADER PUNTOS----------------------------------------
+
+
+    
+	// vertex shader
+    unsigned int vertexShaderPoint = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertexShaderPoint, 1, &vertexShaderSourcePoint, NULL);
+    glCompileShader(vertexShaderPoint);
+    // check for shader compile errors
+    glGetShaderiv(vertexShaderPoint, GL_COMPILE_STATUS, &success);
+    if (!success)
+    {
+        glGetShaderInfoLog(vertexShaderPoint, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+    }
+    // fragment shader
+    unsigned int fragmentShaderPoint = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragmentShaderPoint, 1, &fragmentShaderSourcePoint, NULL);
+    glCompileShader(fragmentShaderPoint);
+    // check for shader compile errors
+    glGetShaderiv(fragmentShaderPoint, GL_COMPILE_STATUS, &success);
+    if (!success)
+    {
+        glGetShaderInfoLog(fragmentShaderPoint, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
+    }
+    // link shaders
+    unsigned int shaderProgramPoint = glCreateProgram();
+    glAttachShader(shaderProgramPoint, vertexShaderPoint);
+    glAttachShader(shaderProgramPoint, fragmentShaderPoint);
+    glLinkProgram(shaderProgramPoint);
+    // check for linking errors
+    glGetProgramiv(shaderProgramPoint, GL_LINK_STATUS, &success);
+    if (!success) {
+        glGetProgramInfoLog(shaderProgramPoint, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
+    }
+    glDeleteShader(vertexShaderPoint);
+	glDeleteShader(fragmentShaderPoint);
+
+    //----------------------VERTICES TRIANGULOS ----------------------------------------
+
     float vertices[] = {
 		 0.0f,1.0f,0.0f,
 		 -1.0f,0.5f,0.0f,
@@ -117,6 +242,26 @@ int main()
         3, 4, 6,  // second Triangle
         4, 5, 6   
     };
+
+    //----------------------VERTICES LINEAS ----------------------------------------
+     float verticesLINE[] = {
+		 0.0f,1.0f,0.0f,
+		 -1.0f,0.5f,0.0f,
+		 1.0f,0.5f,0.0f,
+         0.5f,  0.5f, 0.0f,  // top right
+         0.5f, -0.5f, 0.0f,  // bottom right
+        -0.5f, -0.5f, 0.0f,  // bottom left
+        -0.5f,  0.5f, 0.0f   // top left 
+    };
+	
+
+    unsigned int indicesLINE[] = {  // note that we start from 0!
+		0, 1, 1, 6,
+        6, 5, 5,4,
+        4,3,3,2,2,0 
+    };
+
+
     unsigned int VBO, VAO, EBO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -151,24 +296,60 @@ int main()
     // -----------
     while (!glfwWindowShouldClose(window))
     {
-        // input
-        // -----
-        processInput(window);
 
-        // render
-        // ------
+        processInput(window);
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        // draw our first triangle
+
+
+        //---------------------- TRIANGULOS ----------------------------------------
+
+
         glUseProgram(shaderProgram);
         glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
         //glDrawArrays(GL_TRIANGLES, 0, 6);
         glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
-        // glBindVertexArray(0); // no need to unbind it every time 
- 
-        // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
-        // -------------------------------------------------------------------------------
+        
+
+       
+       
+
+		//---------------------- LINEAS ----------------------------------------
+
+
+        unsigned int VBOLine, VAOLine, EBOLine;
+
+        glGenVertexArrays(1, &VAOLine);
+        glGenBuffers(1, &VBOLine);
+        glGenBuffers(1, &EBOLine);
+        glBindVertexArray(VAOLine);
+        
+        glBindBuffer(GL_ARRAY_BUFFER, VBOLine);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(verticesLINE), verticesLINE, GL_STATIC_DRAW);
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBOLine);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indicesLINE), indicesLINE, GL_STATIC_DRAW);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(0);
+
+        glBindBuffer(GL_ARRAY_BUFFER, 0); 
+
+
+        glUseProgram(shaderProgramLine);
+        glBindVertexArray(VBOLine);
+		glDrawElements(GL_LINE_LOOP, 20, GL_UNSIGNED_INT, 0);
+       
+
+
+        //---------------------- PUNTOS ----------------------------------------
+        glPointSize(4);
+
+        glUseProgram(shaderProgramPoint);
+        glBindVertexArray(VAOLine);
+		glDrawElements(GL_POINTS, 20, GL_UNSIGNED_INT, 0);
+
+
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
