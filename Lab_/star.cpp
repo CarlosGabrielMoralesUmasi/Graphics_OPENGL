@@ -17,38 +17,55 @@ void processInput(GLFWwindow *window);
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
+//----------------------SHADER TRIANGULOS----------------------------------------
+
 const char *vertexShaderSource = "#version 330 core\n"
     "layout (location = 0) in vec3 aPos;\n"
-	"out vec4 vertexColor;\n"
     "void main()\n"
     "{\n"
     "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-	"   vertexColor = vec4(1.0, 1.0, 0.0, 1.0);\n"
     "}\0";
 const char *fragmentShaderSource = "#version 330 core\n"
     "out vec4 FragColor;\n"
-	"in vec4 vertexColor;\n"
     "void main()\n"
     "{\n"
-    "   FragColor = vertexColor;\n"
+    "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
     "}\n\0";
-	
-	
+
+
+//----------------------SHADER LINEAS----------------------------------------
+
 const char *vertexShaderSourceLine = "#version 330 core\n"
     "layout (location = 0) in vec3 aPos;\n"
-	"out vec4 vertexColor;\n"
     "void main()\n"
     "{\n"
-    "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-	"   vertexColor = vec4(0.0, 0.0, 0.0, 1.0);\n"
+    "   gl_Position = vec4(aPos, 1.0);\n"
     "}\0";
 const char *fragmentShaderSourceLine = "#version 330 core\n"
     "out vec4 FragColor;\n"
 	"in vec4 vertexColor;\n"
     "void main()\n"
     "{\n"
-    "   FragColor = vertexColor);\n"
-    "}\n\0";	
+    "   FragColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);\n"
+    "}\n\0";
+
+
+//----------------------SHADER PUNTOS----------------------------------------
+    
+const char *vertexShaderSourcePoint = "#version 330 core\n"
+    "layout (location = 0) in vec3 aPos;\n"
+    "void main()\n"
+    "{\n"
+    "   gl_Position = vec4(aPos, 1.0);\n"
+    "}\0";
+const char *fragmentShaderSourcePoint = "#version 330 core\n"
+    "out vec4 FragColor;\n"
+	"in vec4 vertexColor;\n"
+    "void main()\n"
+    "{\n"
+    "   FragColor = vec4(0.5, 0.0, 0.0, 1.0);\n"
+    "}\n\0";    
+
 
 int main()
 {
@@ -160,6 +177,48 @@ int main()
 	glDeleteShader(fragmentShaderLine);
 	
 	//---------------------------------------------------------------------------
+
+    
+	// vertex shader
+    unsigned int vertexShaderPoint = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertexShaderPoint, 1, &vertexShaderSourcePoint, NULL);
+    glCompileShader(vertexShaderPoint);
+    // check for shader compile errors
+    glGetShaderiv(vertexShaderPoint, GL_COMPILE_STATUS, &success);
+    if (!success)
+    {
+        glGetShaderInfoLog(vertexShaderPoint, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+    }
+    // fragment shader
+    unsigned int fragmentShaderPoint = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragmentShaderPoint, 1, &fragmentShaderSourcePoint, NULL);
+    glCompileShader(fragmentShaderPoint);
+    // check for shader compile errors
+    glGetShaderiv(fragmentShaderPoint, GL_COMPILE_STATUS, &success);
+    if (!success)
+    {
+        glGetShaderInfoLog(fragmentShaderPoint, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
+    }
+    // link shaders
+    unsigned int shaderProgramPoint = glCreateProgram();
+    glAttachShader(shaderProgramPoint, vertexShaderPoint);
+    glAttachShader(shaderProgramPoint, fragmentShaderPoint);
+    glLinkProgram(shaderProgramPoint);
+    // check for linking errors
+    glGetProgramiv(shaderProgramPoint, GL_LINK_STATUS, &success);
+    if (!success) {
+        glGetProgramInfoLog(shaderProgramPoint, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
+    }
+    glDeleteShader(vertexShaderPoint);
+	glDeleteShader(fragmentShaderPoint);
+	
+
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     float vertices[] = {
 		 0.0f,0.8f,0.0f,
 		 0.4f,0.4f,0.0f,
@@ -172,9 +231,8 @@ int main()
 		-0.8f,0.1f,0.0f,
 		-0.4f,0.4f,0.0f
     };
-	
 
-    /*unsigned int indices[] = {  // note that we start from 0!
+	unsigned int indices[] = {  // note that we start from 0!
 			9, 0, 1,  // first Triangle
 			1, 2, 3,  // second Triangle
         3, 4, 5,
@@ -184,57 +242,20 @@ int main()
 			9, 3, 7,
 			9, 1, 3
     };
-	float verticesLINE[] = {
-		 0.0f,0.8f,0.0f,
-		 0.4f,0.4f,0.0f,
-		 0.8f,0.1f,0.0f,
-         0.4f,-0.4f,0.0f,  
-         0.6f, -0.8f, 0.0f,  
-		0.0f, -0.6f, 0.0f,  
+    float verticesLINE[] = {
+        0.0f,0.8f,0.0f,
+        0.4f,0.4f,0.0f,
+        0.8f,0.1f,0.0f,
+        0.4f,-0.4f,0.0f,  
+        0.6f, -0.8f, 0.0f,  
+        0.0f, -0.6f, 0.0f,  
         -0.6f, -0.8f, 0.0f,
-		-0.4f, -0.4f, 0.0f,
-		-0.8f,0.1f,0.0f,
-		-0.4f,0.4f,0.0f
+        -0.4f, -0.4f, 0.0f,
+        -0.8f,0.1f,0.0f,
+        -0.4f,0.4f,0.0f
     };
-	
-
-    unsigned int indicesLINE[] = {  // note that we start from 0!
-			9, 0, 1,  // first Triangle
-			1, 2, 3,  // second Triangle
-        3, 4, 5,
-		5, 6 ,7,
-		7, 8, 9,
-		7, 5, 3
-    };*/
-	   unsigned int indices[] = {  // note that we start from 0!
-			9, 0, 1,  // first Triangle
-			1, 2, 3,  // second Triangle
-        3, 4, 5,
-		5, 6 ,7,
-		7, 8, 9,
-		7, 5, 3,
-			9, 3, 7,
-			9, 1, 3
-    };
-	/*
-	unsigned int indices[] = {
-	0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 0
-};
-	*/
-float verticesLINE[] = {
-	0.0f,0.8f,0.0f,
-	0.4f,0.4f,0.0f,
-	0.8f,0.1f,0.0f,
-	0.4f,-0.4f,0.0f,  
-	0.6f, -0.8f, 0.0f,  
-	0.0f, -0.6f, 0.0f,  
-	-0.6f, -0.8f, 0.0f,
-	-0.4f, -0.4f, 0.0f,
-	-0.8f,0.1f,0.0f,
-	-0.4f,0.4f,0.0f
-};
-unsigned int indicesLINE[] = {
-	0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 0
+    unsigned int indicesLINE[] = {
+	    0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 0
 	};
 
     unsigned int VBO, VAO, EBO;
@@ -275,48 +296,52 @@ unsigned int indicesLINE[] = {
         // -----
         processInput(window);
 
-        // render
-        // ------
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
         // draw our first triangle
         glUseProgram(shaderProgram);
         glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-        //glDrawArrays(GL_TRIANGLES, 0, 6);
-        glDrawElements(GL_TRIANGLES, 24, GL_UNSIGNED_INT, 0);
-		glColor3f(1.0f, 0.0f, 0.0f);
-		
-		
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(verticesLINE), verticesLINE, GL_STATIC_DRAW);
+		glDrawElements(GL_TRIANGLES, 24, GL_UNSIGNED_INT, 0);
 
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indicesLINE), indicesLINE, GL_STATIC_DRAW);
 
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-		glEnableVertexAttribArray(0);
 
-		// note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
-		glBindBuffer(GL_ARRAY_BUFFER, 0); 
+        unsigned int VBOLine, VAOLine, EBOLine;
 
-		// remember: do NOT unbind the EBO while a VAO is active as the bound element buffer object IS stored in the VAO; keep the EBO bound.
-		//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        glGenVertexArrays(1, &VAOLine);
+        glGenBuffers(1, &VBOLine);
+        glGenBuffers(1, &EBOLine);
+        glBindVertexArray(VAOLine);
+        
+        glBindBuffer(GL_ARRAY_BUFFER, VBOLine);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(verticesLINE), verticesLINE, GL_STATIC_DRAW);
 
-		// You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
-		// VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
-		glBindVertexArray(0); 	
-		
-		
-		
-		
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBOLine);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indicesLINE), indicesLINE, GL_STATIC_DRAW);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(0);
+
+        // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
+        glBindBuffer(GL_ARRAY_BUFFER, 0); 
+
 		// draw our first triangle
         glUseProgram(shaderProgramLine);
-        glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-        //glDrawArrays(GL_TRIANGLES, 0, 6);
-		glDrawElements(GL_LINE_LOOP, 24, GL_UNSIGNED_INT, 0);
+        glBindVertexArray(VBOLine);
+		glDrawElements(GL_LINE_LOOP, 20, GL_UNSIGNED_INT, 0);
         // glBindVertexArray(0); // no need to unbind it every time 
- 
+
+
+        
+        glPointSize(4);
+
+        	// draw our first triangle
+        glUseProgram(shaderProgramPoint);
+        glBindVertexArray(VAOLine);
+		glDrawElements(GL_POINTS, 20, GL_UNSIGNED_INT, 0);
+
+
+       
+
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
         glfwSwapBuffers(window);
@@ -328,7 +353,7 @@ unsigned int indicesLINE[] = {
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
-    glDeleteProgram(shaderProgram);
+    glDeleteProgram(shaderProgramLine);
 
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
