@@ -3,5 +3,5 @@ Homeworks &amp; tasks lab´s
 
 ## Integrantes:
 
--Cristian Ocola
--Carlos Morales
+* Cristian Ocola
+* Carlos Morales
