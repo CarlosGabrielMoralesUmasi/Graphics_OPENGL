@@ -39,8 +39,48 @@ El código está organizado de manera que se dibujan tres formas geométricas di
 
 3. Puntos: Se utiliza un shader de vértices y un shader de fragmentos para dibujar puntos rojos en los vértices de un círculo formado por múltiples segmentos.
 
-### Créditos
+
+## OpenGL Code README HOUSE
+
+Este repositorio contiene un código de ejemplo que utiliza OpenGL para renderizar triángulos, líneas y puntos en una ventana de GLFW.
+
+### Requisitos
+
+- GLFW
+- glad
+
+### Compilación
+
+1. Clona este repositorio.
+2. Configura las dependencias de GLFW y glad.
+3. Compila el código fuente usando un compilador compatible con OpenGL.
+
+### Uso
+
+1. Ejecuta el archivo binario generado después de la compilación.
+2. Se abrirá una ventana de GLFW donde se mostrarán los triángulos, líneas y puntos.
+
+### Atribuciones
+
+- El código fuente de los shaders utilizados para los triángulos se encuentra en `SHADER TRIANGULOS`.
+- El código fuente de los shaders utilizados para las líneas se encuentra en `SHADER LINEAS`.
+- El código fuente de los shaders utilizados para los puntos se encuentra en `SHADER PUNTOS`.
+
+### Estructura del Código Fuente
+
+- `main.cpp`: Contiene el punto de entrada del programa.
+- `framebuffer_size_callback()`: Función de devolución de llamada para el cambio de tamaño del framebuffer.
+- `processInput()`: Función para procesar la entrada del usuario.
+- `vertexShaderSource` y `fragmentShaderSource`: Código fuente de los shaders utilizados para los triángulos.
+- `vertexShaderSourceLine` y `fragmentShaderSourceLine`: Código fuente de los shaders utilizados para las líneas.
+- `vertexShaderSourcePoint` y `fragmentShaderSourcePoint`: Código fuente de los shaders utilizados para los puntos.
+
+
+## Créditos
 
 Este código fue desarrollado por Cristhian Ocola y Carlos Morales.
 
 ¡Disfruta explorando y experimentando con el código de OpenGL!
+
+
+
