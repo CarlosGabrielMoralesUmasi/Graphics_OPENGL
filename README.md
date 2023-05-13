@@ -76,6 +76,81 @@ Este repositorio contiene un código de ejemplo que utiliza OpenGL para renderiz
 - `vertexShaderSourcePoint` y `fragmentShaderSourcePoint`: Código fuente de los shaders utilizados para los puntos.
 
 
+
+## OpenGL Script STAR
+
+Este script es un ejemplo de cómo utilizar OpenGL para renderizar triángulos, líneas y puntos en una ventana de GLFW.
+
+### Requisitos
+
+- GLFW 3 (https://www.glfw.org/)
+- GLAD (https://glad.dav1d.de/)
+
+### Compilación
+
+Para compilar el script, asegúrate de tener los requisitos mencionados anteriormente instalados y configurados correctamente. Luego, sigue estos pasos:
+
+1. Compila el script con el siguiente comando:
+
+    ```
+    g++ script.cpp -o script -lglfw -ldl
+    ```
+
+2. Ejecuta el script resultante:
+
+    ```
+    ./script
+    ```
+
+### Descripción
+
+El script muestra cómo utilizar los shaders de vértices y fragmentos para renderizar triángulos, líneas y puntos en una ventana de GLFW.
+
+#### Shaders
+
+El script contiene tres shaders diferentes: uno para los triángulos, otro para las líneas y otro para los puntos. Estos shaders se definen en las siguientes variables:
+
+- Shader de triángulos:
+
+  - Vertex shader: `vertexShaderSource`
+  - Fragment shader: `fragmentShaderSource`
+
+- Shader de líneas:
+
+  - Vertex shader: `vertexShaderSourceLine`
+  - Fragment shader: `fragmentShaderSourceLine`
+
+- Shader de puntos:
+
+  - Vertex shader: `vertexShaderSourcePoint`
+  - Fragment shader: `fragmentShaderSourcePoint`
+
+#### Configuración
+
+El script utiliza GLFW para inicializar y configurar la ventana de renderizado. El tamaño de la ventana se establece en las siguientes constantes:
+
+- Ancho de la ventana: `SCR_WIDTH`
+- Altura de la ventana: `SCR_HEIGHT`
+
+#### Renderizado
+
+El script utiliza el bucle principal para renderizar los objetos en la ventana de GLFW. Renderiza un conjunto de triángulos utilizando el shader de triángulos y otro conjunto de líneas utilizando el shader de líneas.
+
+Los vértices y los índices para los triángulos y las líneas se definen en las siguientes variables:
+
+- Triángulos:
+  - Vértices: `vertices`
+  - Índices: `indices`
+
+- Líneas:
+  - Vértices: `verticesLINE`
+  - Índices: `indicesLINE`
+
+#### Compilación y enlace de shaders
+
+El script compila y enlaza los shaders utilizando las funciones de OpenGL. Comprueba los errores de compilación y enlace y muestra mensajes de error si es necesario.
+
+
 ## Créditos
 
 Este código fue desarrollado por Cristhian Ocola y Carlos Morales.
