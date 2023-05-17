@@ -1,202 +1,3 @@
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-#include <iostream>
-
-// Tamaño de la ventana
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
-
-const char *vertexShaderSource = R"(
-    #version 330 core
-    layout (location = 0) in vec3 aPos;
-    layout (location = 1) in vec3 aColor;
-    out vec3 ourColor;
-    uniform mat4 transform;
-    void main()
-    {
-        gl_Position = transform * vec4(aPos, 1.0);
-        ourColor = aColor;
-    }
-)";
-
-const char *fragmentShaderSource = R"(
-    #version 330 core
-    out vec4 FragColor;
-    in vec3 ourColor;
-    void main()
-    {
-        FragColor = vec4(ourColor, 1.0);
-    }
-)";
-
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
-    glViewport(0, 0, width, height);
-}
-
-void render()
-{
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glLoadIdentity();
-
-    // Establece una perspectiva adecuada
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    //gluPerspective(45.0f, (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-    glMatrixMode(GL_PROJECTION);
-    glLoadMatrixf(glm::value_ptr(projection));
-
-
-    // Ajusta la posición y orientación de la cámara
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glm::mat4 view = glm::lookAt(glm::vec3(3.0f, 3.0f, 3.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    glMatrixMode(GL_MODELVIEW);
-    glLoadMatrixf(glm::value_ptr(view));
-
-    //gluLookAt(3.0f, 3.0f, 3.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
-
-    // Crea el shader program
-    unsigned int shaderProgram;
-    shaderProgram = glCreateProgram();
-
-    // Compila el vertex shader
-    unsigned int vertexShader;
-    vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-    glCompileShader(vertexShader);
-    glAttachShader(shaderProgram, vertexShader);
-
-    // Compila el fragment shader
-    unsigned int fragmentShader;
-    fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-    glCompileShader(fragmentShader);
-    glAttachShader(shaderProgram, fragmentShader);
-
-    // Enlaza el shader program
-    glLinkProgram(shaderProgram);
-    glUseProgram(shaderProgram);
-
-    // Define los vértices del octógono en 2D
-    float octagonVertices[] = {
-    0.0f, 1.0f, 0.0f,   // Vértice 1
-    -0.7f, 0.7f, 0.0f,  // Vértice 2
-    -1.0f, 0.0f, 0.0f,  // Vértice 3
-    -0.7f, -0.7f, 0.0f, // Vértice 4
-    0.0f, -1.0f, 0.0f,  // Vértice 5
-    0.7f, -0.7f, 0.0f,  // Vértice 6
-    1.0f, 0.0f, 0.0f,   // Vértice 7
-    0.7f, 0.7f, 0.0f    // Vértice 8
-};
-
-    // Crear el búfer de atributos
-    unsigned int VBO;
-    glGenBuffers(1, &VBO);
-
-    // Enlazar y cargar los datos en el búfer de atributos
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(octagonVertices), octagonVertices, GL_STATIC_DRAW);
-
-    // Configurar los atributos de vértices
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-
-    // Configurar el color de los vértices
-    float colors[] = {
-        1.0f, 0.0f, 0.0f,   // Vértice 1 (Rojo)
-        0.0f, 1.0f, 0.0f,   // Vértice 2 (Verde)
-        0.0f, 0.0f, 1.0f,   // Vértice 3 (Azul)
-        1.0f, 1.0f, 0.0f,   // Vértice 4 (Amarillo)
-        1.0f, 0.0f, 1.0f,   // Vértice 5 (Magenta)
-        0.0f, 1.0f, 1.0f,   // Vértice 6 (Cyan)
-        1.0f, 1.0f, 1.0f,   // Vértice 7 (Blanco)
-        0.5f, 0.5f, 0.5f    // Vértice 8 (Gris)
-    };
-
-    // Crear el búfer de color
-    unsigned int colorVBO;
-    glGenBuffers(1, &colorVBO);
-
-    // Enlazar y cargar los datos en el búfer de color
-    glBindBuffer(GL_ARRAY_BUFFER, colorVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW);
-
-    // Configurar el atributo de color
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(1);
-
-    // Transformación del objeto
-    float angle = 45.0f;
-    glm::mat4 transform = glm::rotate(glm::mat4(1.0f), glm::radians(angle), glm::vec3(0.0f, 1.0f, 0.0f));
-
-    // Obtener la ubicación de la transformación uniforme en el shader
-    int transformLoc = glGetUniformLocation(shaderProgram, "transform");
-
-    // Pasar la transformación al shader
-    glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
-
-    // Renderizar el octágono
-    glDrawArrays(GL_POLYGON, 0, 8);
-
-    // Desenlazar el búfer de atributos y el programa de shader
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glUseProgram(0);
-
-}
-int main()
-{
-    // ...
-
-    // Crear una ventana GLFW
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "OpenGL Window", NULL, NULL);
-    if (window == NULL)
-    {
-        std::cout << "Error al crear la ventana GLFW." << std::endl;
-        glfwTerminate();
-        return -1;
-    }
-    glfwMakeContextCurrent(window);
-
-    // Registra la función framebuffer_size_callback para el evento de cambio de tamaño de la ventana
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-    while (!glfwWindowShouldClose(window))
-    {
-        render();
-        glfwSwapBuffers(window);
-        glfwPollEvents();
-    }
-
-    glfwTerminate();
-    return 0;
-
-    // ...
-}
-
-       
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /*
 
 ███████████████████████████████████████████████████████████████████████
@@ -408,11 +209,6 @@ void contorno(Polygono& p, float max_x, float max_y, float min_x, float min_y) {
 }
 //////////////////////////
 
-
-
-
-
-
 void movimiento_cuadrado(Polygono& p, float min_x, float min_y, float max_x, float max_y) {
     vector <float> eje_x = p.get_min_max_x();
     vector <float> eje_y = p.get_min_max_y();
@@ -602,186 +398,6 @@ void processInput(GLFWwindow* window, int key, int scancode, int action, int mod
        
     
 }
-const char *vertexShaderSource ="#version 330 core\n"
-    "layout (location = 0) in vec3 aPos;\n"
-    "layout (location = 1) in vec3 aColor;\n"
-    "out vec3 ourColor;\n"
-    "uniform mat4 transform;\n"
-    "void main()\n"
-    "{\n"
-    "   gl_Position = vec4(aPos, 1.5);\n"
-    "   ourColor = aColor;\n"
-    "}\0";
-
-const char *fragmentShaderSource = "#version 330 core\n"
-    "out vec4 FragColor;\n"
-    "in vec3 ourColor;\n"
-    "void main()\n"
-    "{\n"
-    "   FragColor = vec4(ourColor, 1.0f);\n"
-    "}\n\0";
-
-void drawCube()
-{
-    // Define los vértices del octógono en 2D
-    float octagonVertices[] = {
-        0.0f, 1.0f,    // Vértice 1
-        0.7f, 0.7f,    // Vértice 2
-        1.0f, 0.0f,    // Vértice 3
-        0.7f, -0.7f,   // Vértice 4
-        0.0f, -1.0f,   // Vértice 5
-        -0.7f, -0.7f,  // Vértice 6
-        -1.0f, 0.0f,   // Vértice 7
-        -0.7f, 0.7f    // Vértice 8
-    };
-
-    // Define los vértices del cubo en 3D
-    float cubeVertices[8][3];  // 8 vértices con 3 coordenadas (x, y, z)
-
-    // Genera los vértices del cubo a partir de los vértices del octógono
-    for (int i = 0; i < 8; i++)
-    {
-        cubeVertices[i][0] = octagonVertices[i * 2];      // Coordenada x
-        cubeVertices[i][1] = octagonVertices[i * 2 + 1];  // Coordenada y
-        cubeVertices[i][2] = 0.0f;                        // Coordenada z (en este ejemplo, todos los vértices están en el plano xy)
-    }
-
-    // Dibuja las caras del cubo utilizando las llamadas a glBegin(GL_QUADS) y glEnd()
-    glBegin(GL_QUADS);
-
-    // Cara frontal
-    glVertex3f(cubeVertices[0][0], cubeVertices[0][1], cubeVertices[0][2]);
-    glVertex3f(cubeVertices[1][0], cubeVertices[1][1], cubeVertices[1][2]);
-    glVertex3f(cubeVertices[2][0], cubeVertices[2][1], cubeVertices[2][2]);
-    glVertex3f(cubeVertices[3][0], cubeVertices[3][1], cubeVertices[3][2]);
-
-    // Cara posterior
-    glVertex3f(cubeVertices[4][0], cubeVertices[4][1], cubeVertices[4][2]);
-    glVertex3f(cubeVertices[5][0], cubeVertices[5][1], cubeVertices[5][2]);
-    glVertex3f(cubeVertices[6][0], cubeVertices[6][1], cubeVertices[6][2]);
-    glVertex3f(cubeVertices[7][0], cubeVertices[7][1], cubeVertices[7][2]);
-
-    // Otras caras del cubo (izquierda, derecha, arriba, abajo)
-
-    glEnd();
-}
-
-void setPerspective(float fov, float aspectRatio, float nearPlane, float farPlane)
-{
-    float f = 1.0f / tan(fov * 0.5f * (M_PI / 180.0f));
-
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glFrustum(-aspectRatio * nearPlane * f, aspectRatio * nearPlane * f, -nearPlane * f, nearPlane * f, nearPlane, farPlane);
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-}
-void GluLookAt(GLdouble eyex, GLdouble eyey, GLdouble eyez, GLdouble centerx, GLdouble centery, GLdouble centerz, GLdouble upx, GLdouble upy, GLdouble upz)
-{
-    GLfloat forward[3], side[3], up[3];
-    GLfloat matrix[16];
-    GLfloat theta;
-    
-    forward[0] = centerx - eyex;
-    forward[1] = centery - eyey;
-    forward[2] = centerz - eyez;
-
-    // Normalize forward vector
-    theta = sqrt(forward[0]*forward[0] + forward[1]*forward[1] + forward[2]*forward[2]);
-    forward[0] /= theta;
-    forward[1] /= theta;
-    forward[2] /= theta;
-
-    // Calculate side vector
-    side[0] = forward[1]*upz - forward[2]*upy;
-    side[1] = forward[2]*upx - forward[0]*upz;
-    side[2] = forward[0]*upy - forward[1]*upx;
-
-    // Normalize side vector
-    theta = sqrt(side[0]*side[0] + side[1]*side[1] + side[2]*side[2]);
-    side[0] /= theta;
-    side[1] /= theta;
-    side[2] /= theta;
-
-    // Calculate up vector
-    up[0] = side[1]*forward[2] - side[2]*forward[1];
-    up[1] = side[2]*forward[0] - side[0]*forward[2];
-    up[2] = side[0]*forward[1] - side[1]*forward[0];
-
-    // Create matrix
-    matrix[0] = side[0];
-    matrix[4] = side[1];
-    matrix[8] = side[2];
-    matrix[12] = 0.0f;
-    matrix[1] = up[0];
-    matrix[5] = up[1];
-    matrix[9] = up[2];
-    matrix[13] = 0.0f;
-    matrix[2] = -forward[0];
-    matrix[6] = -forward[1];
-    matrix[10] = -forward[2];
-    matrix[14] = 0.0f;
-    matrix[3] = 0.0f;
-    matrix[7] = 0.0f;
-    matrix[11] = 0.0f;
-    matrix[15] = 1.0f;
-
-    // Multiply current matrix by new matrix
-    glMultMatrixf(matrix);
-
-    // Translate to eye position
-    glTranslatef(-eyex, -eyey, -eyez);
-}
-
-
-void render()
-{
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glLoadIdentity();
-
-    // Establece una perspectiva adecuada
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    setPerspective(45.0f, (float)800 / (float)600, 0.1f, 100.0f);
-
-    // Ajusta la posición y orientación de la cámara
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    GluLookAt(3.0f, 3.0f, 3.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
-
-    // Crea el shader program
-    unsigned int shaderProgram = glCreateProgram();
-
-    // Compila el vertex shader
-    unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-    glCompileShader(vertexShader);
-    glAttachShader(shaderProgram, vertexShader);
-
-    // Compila el fragment shader
-    unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-    glCompileShader(fragmentShader);
-    glAttachShader(shaderProgram, fragmentShader);
-
-    // Enlaza el shader program
-    glLinkProgram(shaderProgram);
-    glUseProgram(shaderProgram);
-
-    // Dibuja el cubo
-    drawCube();
-
-    // Elimina los shaders y el shader program después de usarlos
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
-    glDeleteProgram(shaderProgram);
-
-    glFlush();
-}
-
-
-
 // ---------------------------------------------------------------------------------------------------------
 
 int main() {
@@ -853,6 +469,12 @@ int main() {
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
     glUseProgram(shaderProgram);
+    // set up vertex data (and buffer(s)) and configure vertex attributes
+    // ------------------------------------------------------------------
+    // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
+    // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
+    // glBindVertexArray(0);
+    // as we only have a single shader, we could also just activate our shader once beforehand if we want to 
     unsigned int VBO, VAO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -865,18 +487,77 @@ int main() {
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
     glBindVertexArray(VAO);
-   
+    // render loop
+//W-ESCALA 
+//S ESCALA 
+//E COLOR 
+//R COLOR
+//C COLOR
+//T COLOR
     // -----------
     while (!glfwWindowShouldClose(window)) {
-        render();
+        //rombo.print_position();
+        //print_matrix();
+        // input
+        glfwSetKeyCallback(window, processInput);
+        // -----
+        // render
+        glClearColor(0, 0, 0, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        
+        //triangulo_rojo.escalao(1.002, 1.002, 0);
+        cuadrado.cambiarcolor(Restrella, Gestrella, Bestrella);
+       // cuadrado.pro_rotation_eje(5);
+        //cuadrado.pro_rotation_x(5);
+        movimiento_cuadrado(rombo, -0.9, -0.9, 0.9, 0.9);
+        contorno(circulo, 1.3,1.3,-1.3,-1.3);
+        color(&Restrella, &Gestrella, &Bestrella);
+
+        ///dibujar
+        //estrella.draw(window);
+        rombo.draw(window);
+        cuadrado.draw(window);
+        triangulo_rojo.draw(window);
+        circulo.draw(window);
+        trianguloLine.drawLine(window);
+        //pentagono.draw(window);
+
+
+        // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
+        // -------------------------------------------------------------------------------
         glfwSwapBuffers(window);
         glfwPollEvents();
 
 
     }
+    // optional: de-allocate all resources once they've outlived their purpose:
+    //------------------------------------------------------------------------
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glDeleteProgram(shaderProgram);
+    // glfw: terminate, clearing all previously allocated GLFW resources.
+    // ------------------------------------------------------------------
+
+    /*
+    // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
+        // ---------------------------------------------------------------------------------------------------------
+        void processInput(GLFWwindow *window)
+        {
+            if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+                glfwSetWindowShouldClose(window, true);
+        }
+
+        // glfw: whenever the window size changed (by OS or user resize) this callback function executes
+        // ---------------------------------------------------------------------------------------------
+        void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+        {
+            // make sure the viewport matches the new window dimensions; note that width and 
+            // height will be significantly larger than specified on retina displays.
+            glViewport(0, 0, width, height);
+        }
+    
+    */
     glfwTerminate();
     return 0;
 
