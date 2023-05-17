@@ -23,4 +23,4 @@ El programa permite interactuar con diferentes figuras geométricas y aplicar tr
 * ESC: Cerrar la ventana y salir del programa.
 ## Créditos
 Este proyecto fue desarrollado por Carlos Morales U. y Cristian Ocola P. como parte de [Computación grafica_CCOMP8-1].
-![Figuras en movimiento](/imagen.jpg)
+![Figuras en movimiento](./imagen.jpg)
