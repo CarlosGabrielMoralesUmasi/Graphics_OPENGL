@@ -98,7 +98,7 @@ La estructura Polygono representa un polígono y proporciona los siguientes miem
 * vel: La velocidad del polígono.
   
 #### Constructors
-- Polygono(vector<float> temp_vertices, float R, float G, float B): Constructs a Polygono object with the specified vertices and color.
+- Polygono(vector<float> temp_vertices, float R, float G, float B): Construye un objeto Polygono con los vértices y el color especificados.
   
 #### Methods
 * void cambiarcolor(float R, float G, float B): Cambia el color del polígono.
