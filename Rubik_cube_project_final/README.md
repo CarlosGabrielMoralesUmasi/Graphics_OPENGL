@@ -71,9 +71,12 @@ Agradecemos cualquier contribución al proyecto, ya sea en forma de correcciones
 ![Logo de mi proyecto](im3.jpeg)
 ![Logo de mi proyecto](im4.jpeg)
 
+# Informe Latex:
+Puedes consultar el archivo adjunto `Informe_latex.pdf` para obtener más detalles.
+
 
 ---
-#Integrantes:
+# Integrantes:
 Carlos Morales Umasi, Christian Ocola Pinto, Aarón Blanco Ramirez.
 
 ¡Espero que este README.md mejorado sea útil para tu proyecto! Recuerda personalizarlo según tus necesidades y agregar cualquier información adicional que consideres relevante. ¡Buena suerte con tu proyecto de Cubo de Rubik con OpenGL!
