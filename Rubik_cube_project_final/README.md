@@ -66,10 +66,10 @@ Si deseascontribuir al proyecto, puedes seguir los siguientes pasos:
 
 Agradecemos cualquier contribución al proyecto, ya sea en forma de correcciones de errores, mejoras de funcionalidad o nuevas características.
 ## Imagenes 
-![Logo de mi proyecto](im1.png)
-![Logo de mi proyecto](im2.png)
-![Logo de mi proyecto](im3.png)
-![Logo de mi proyecto](im4.png)
+![Logo de mi proyecto](im1.jpeg)
+![Logo de mi proyecto](im2.jpeg)
+![Logo de mi proyecto](im3.jpeg)
+![Logo de mi proyecto](im4.jpeg)
 
 
 ---
