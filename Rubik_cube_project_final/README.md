@@ -78,6 +78,9 @@ El video se puede visualizar aqui `CUBITO RUBICK.mkv`, en el cual se muestra el 
 <video src="VIDEO_DEMOSTRACION.mp4" controls>
   Your browser does not support the video tag.
 </video>
+<video src="video.mkv" controls>
+  Your browser does not support the video tag.
+</video>
 
 
 ---
