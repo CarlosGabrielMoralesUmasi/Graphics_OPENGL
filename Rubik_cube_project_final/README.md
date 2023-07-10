@@ -75,6 +75,8 @@ Agradecemos cualquier contribución al proyecto, ya sea en forma de correcciones
 Puedes consultar el archivo adjunto `Informe_latex.pdf` para obtener más detalles.
 # Video:
 El video se puede visualizar aqui `CUBITO RUBICK.mkv`, en el cual se muestra el cubo funcionando.
+[Enlace al video](VIDEO_DEMOSTRACION.mp4)
+
 <video src="VIDEO_DEMOSTRACION.mp4" controls>
   Your browser does not support the video tag.
 </video>
